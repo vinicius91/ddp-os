@@ -1,0 +1,59 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    restart: unless-stopped
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      APP_ENV: ${APP_ENV}
+      PORT: ${PORT}
+      CTRL_PLANE_DB_HOST: ${CTRL_PLANE_DB_HOST}
+      CTRL_PLANE_DB_PORT: ${CTRL_PLANE_DB_PORT}
+      CTRL_PLANE_DB_DATABASE: ${CTRL_PLANE_DB_DATABASE}
+      CTRL_PLANE_DB_USERNAME: ${CTRL_PLANE_DB_USERNAME}
+      CTRL_PLANE_DB_PASSWORD: ${CTRL_PLANE_DB_PASSWORD}
+      CTRL_PLANE_DB_SCHEMA: ${CTRL_PLANE_DB_SCHEMA}
+    depends_on:
+      psql_bp:
+        condition: service_healthy
+    networks:
+      - ctlr_plane
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - 5173:5173
+    networks:
+      - ctlr_plane
+  psql_bp:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${CTRL_PLANE_DB_DATABASE}
+      POSTGRES_USER: ${CTRL_PLANE_DB_USERNAME}
+      POSTGRES_PASSWORD: ${CTRL_PLANE_DB_PASSWORD}
+    ports:
+      - "${CTRL_PLANE_DB_PORT}:5432"
+    volumes:
+      - psql_volume_bp:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${CTRL_PLANE_DB_USERNAME} -d ${CTRL_PLANE_DB_DATABASE}'"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - ctlr_plane
+
+volumes:
+  psql_volume_bp:
+networks:
+  ctlr_plane:
