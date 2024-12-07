@@ -1,5 +1,5 @@
 {
-  "name": "ddp-application",
+  "name": "ddp-os",
   "engineVersion": "v0.14.0",
   "sdk": "typescript",
   "dependencies": [

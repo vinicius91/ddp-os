@@ -1,5 +1,6 @@
-import { Container, Client, Directory } from "@dagger.io/dagger";
+import { Client, Directory, Container } from "@dagger.io/dagger";
 
+const REPOSITORY_BASE_PATH = "ddp-application/ddp-ctrl-plane"
 const REPOSITORY_BASE_NAME = "viniro/ddp-os"
 const REPOSITORY_TAG = "v0.0.1"
 const CTRL_PLANE_PREFIX = "ctrl-plane"
@@ -8,7 +9,6 @@ interface CtrlPlaneImages {
     go: string;
     frontend: string;
 }
-
 
 export async function buildDDPCtrlPlane(dag: Client, directory: Directory): Promise<CtrlPlaneImages> {
     const goImage = await publishGoImage(dag, directory);
@@ -21,17 +21,19 @@ export async function buildDDPCtrlPlane(dag: Client, directory: Directory): Prom
 
 
 async function publishGoImage(dag: Client, directory: Directory): Promise<string> {
+    let filteredSource = directory.directory(`${REPOSITORY_BASE_PATH}/`)
+    
     const buildContainer = dag.container()
     .from("golang:1.23-alpine")
-    .withDirectory("/src", directory)
-    .withWorkdir("/src/ddp-ctrl-plane")
+    .withDirectory("/src", filteredSource)
+    .withWorkdir("/src")
     .withExec(["go", "mod", "download"])
     .withExec(["go", "build", "-o", "main", "cmd/api/main.go"])
 
     const prodContainer = dag.container()
     .from("alpine:3.20.1")
     .withWorkdir("/app")
-    .withFile("/app/main", buildContainer.file("/src/ddp-ctrl-plane/main"))
+    .withFile("/app/main", buildContainer.file("/src/main"))
     .withExposedPort(8080)
     .withEntrypoint(["./main"])
 
@@ -41,7 +43,7 @@ async function publishGoImage(dag: Client, directory: Directory): Promise<string
 }
 
 async function publishFrontendImage(dag: Client, directory: Directory): Promise<string> {
-    let filteredSource = directory.directory("ddp-ctrl-plane/frontend/")
+    let filteredSource = directory.directory(`${REPOSITORY_BASE_PATH}/frontend/`)
     
     const buildContainer = dag.container()
     .from("node:20")

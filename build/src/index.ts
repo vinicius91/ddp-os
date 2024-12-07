@@ -10,7 +10,7 @@ import * as utils from "./utils";
 import * as ddpCtrlPlane from "./ddp-ctrl-plane";
 
 @object()
-export class DdpApplication {
+export class DdpOs {
   /**
    * Returns a container with the local K8s cluster running and the Nginx chart installed
    */
