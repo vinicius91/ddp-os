@@ -4,6 +4,11 @@
   "sdk": "typescript",
   "dependencies": [
     {
+      "name": "java",
+      "source": "github.com/seungyeop-lee/daggerverse/java@java/v0.2.2",
+      "pin": "f68fd5ad99b77c58a152c173fa505f6f9388045f"
+    },
+    {
       "name": "k3s",
       "source": "github.com/marcosnils/daggerverse/k3s@k3s/v0.1.7",
       "pin": "833ec36632b2457862f6e3bf1f7107ad65e3e515"
