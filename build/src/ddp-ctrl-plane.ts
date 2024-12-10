@@ -66,9 +66,3 @@ async function publishFrontendImage(dag: Client, directory: Directory): Promise<
 
     return prodContainer.publish(imageName);
 }
-
-
-
-
-
-// cp /src/ddp-ctrl-plane/frontend/package*.json .
