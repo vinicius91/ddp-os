@@ -46,6 +46,24 @@ delete-cluster:
 	@echo "Deleting Kubernetes cluster with kind..." && \
 	kind delete cluster --name dev
 
+publish-kafka-connect-img:
+	@echo "Publish Kafka Connect image..." && \
+	dagger call publish-kafka-connect-image --source=.
+
+update-helm-values:
+	@echo "Updating helm custom values" && \
+  rm helm/ddp-streaming/custom.yaml && \
+	helm template helm/ddp-streaming/ >> helm/ddp-streaming/custom.yaml
+
+apply-helm:
+	@echo "Applying helm values" && \
+  kubectl apply -f helm/ddp-streaming/custom.yaml -n ddp-kafka
+
+install-kafka-ui:
+	@echo "Installing Kafka UI" && \
+  helm install kafka-ui kafka-ui/kafka-ui --set existingConfigMap="kafka-ui-helm-values" --namespace ddp-kafka
+
 # Clean target (optional, add clean steps as necessary)
 clean:
 	@echo "Cleaning up..."
+

@@ -1,0 +1,9 @@
+global:
+  repository: "viniro"
+  name: "ddp"
+
+kafka:
+  brokerReplicas: 3
+  connectReplicas: 1
+  bridgeReplicas: 2
+

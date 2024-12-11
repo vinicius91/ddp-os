@@ -1,5 +1,5 @@
 apiVersion: v2
-name: ddp-flink
+name: ddp-streaming
 description: A Helm chart for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
