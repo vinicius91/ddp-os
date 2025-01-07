@@ -6,4 +6,19 @@ kafka:
   brokerReplicas: 3
   connectReplicas: 1
   bridgeReplicas: 2
+  enableMetrics: true
+
+ddpCluster:
+  replicas: 3
+  image: "viniro/ddp-os-kafka-kafka:v0.0.1"
+
+ddpKafkaConnect:
+  replicas: 2
+  image: "viniro/ddp-os-kafka-kafka-connect:v0.0.1"
+
+ddpKafkaBridge:
+  replicas: 2
+  
+
+
 

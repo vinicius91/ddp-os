@@ -7,3 +7,5 @@ data:
   KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "{{ .Values.global.name }}-cluster-kafka-bootstrap:9092"
   AUTH_TYPE: "DISABLED"
   MANAGEMENT_HEALTH_LDAP_ENABLED: "FALSE" 
+  KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: "sink"
+  KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: "http://ddp-sink-cluster-connect:8083"

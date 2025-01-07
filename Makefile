@@ -63,6 +63,14 @@ install-kafka-ui:
 	@echo "Installing Kafka UI" && \
   helm install kafka-ui kafka-ui/kafka-ui --set existingConfigMap="kafka-ui-helm-values" --namespace ddp-kafka
 
+initial-setup:
+	./initial-setup.sh
+
+ui-port-forward:
+	export POD_NAME=$(kubectl get pods --namespace ddp-kafka -l "app.kubernetes.io/name=kafka-ui,app.kubernetes.io/instance=kafka-ui" -o jsonpath="{.items[0].metadata.name}") && \
+  echo "Visit http://127.0.0.1:8080 to use your application" && \
+  kubectl --namespace ddp-kafka port-forward $POD_NAME 8080:8080
+
 # Clean target (optional, add clean steps as necessary)
 clean:
 	@echo "Cleaning up..."
